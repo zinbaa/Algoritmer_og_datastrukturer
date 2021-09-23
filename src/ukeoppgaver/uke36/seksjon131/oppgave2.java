@@ -1,4 +1,4 @@
-package ukeoppgaver.uke36;
+package ukeoppgaver.uke36.seksjon131;
 
 import datastrukturer.Tabell;
 
