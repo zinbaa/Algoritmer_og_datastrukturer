@@ -1,5 +1,8 @@
 package datastrukturer;
 
+import eksempelklasser.Komporator;
+
+import java.util.Arrays;
 import java.util.Random;
 
 public class Tabell {
@@ -28,7 +31,9 @@ public class Tabell {
 
             public static void bytt(char[] a, int i, int j)
             {
-                char temp = a[i]; a[i] = a[j]; a[j] = temp;
+                char temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
             }
 
             public static int[] randPerm(int n)
@@ -232,6 +237,200 @@ public class Tabell {
 
         return verdi == a[i] ? i : -(i + 1);   // sjekker innholdet i a[i]
     }
+
+    public static int binærsøk(int[] a, int fra, int til, int verdi)
+    {
+        Tabell.fratilKontroll(a.length,fra,til);  // se Programkode 1.2.3 a)
+        int v = fra, h = til - 1;  // v og h er intervallets endepunkter
+
+        while (v <= h)    // fortsetter så lenge som a[v:h] ikke er tom
+        {
+            int m = (v + h)/2;      // heltallsdivisjon - finner midten
+            int midtverdi = a[m];   // hjelpevariabel for midtverdien
+
+            if (verdi == midtverdi) return m;          // funnet
+            else if (verdi > midtverdi) v = m + 1;     // verdi i a[m+1:h]
+            else  h = m - 1;                           // verdi i a[v:m-1]
+        }
+
+        return -(v + 1);    // ikke funnet, v er relativt innsettingspunkt
+    }
+
+    public static int binærsøk(int[] a, int verdi)  // søker i hele a
+    {
+        return binærsøk(a,0,a.length,verdi);  // bruker metoden over
+    }
+
+    public static int binærsøk3(int[] a, int fra, int til, int verdi)
+    {
+        Tabell.fratilKontroll(a.length,fra,til);  // se Programkode 1.2.3 a)
+        int v = fra, h = til - 1;  // v og h er intervallets endepunkter
+
+        while (v < h)  // obs. må ha v < h her og ikke v <= h
+        {
+            int m = (v + h)/2;  // heltallsdivisjon - finner midten
+
+            if (verdi > a[m]) v = m + 1;   // verdi må ligge i a[m+1:h]
+            else  h = m;                   // verdi må ligge i a[v:m]
+        }
+        if (h < v || verdi < a[v]) return -(v + 1);  // ikke funnet
+        else if (verdi == a[v]) return v;            // funnet
+        else  return -(v + 2);                       // ikke funnet
+    }
+
+    public static void innsettingssortering(int[] a)
+    {
+        for (int i = 1; i < a.length; i++)  // starter med i = 1
+        {
+            int verdi = a[i], j = i - 1;      // verdi er et tabellelemnet, j er en indeks
+            for (; j >= 0 && verdi < a[j]; j--) a[j+1] = a[j];  // sammenligner og flytter
+            a[j + 1] = verdi;                 // j + 1 er rett sortert plass
+        }
+    }
+
+    public static void innsettingssorteringZ(int[] a, int fra, int til){
+        fratilKontroll(a.length, fra, til);
+
+        for (int i = fra+1; i < til; i++){
+            int temp = a[i];
+
+            for (int j = i-1; j>= 0 && temp < a[j]; j--){
+                a[j+1] = a[j];
+                a[j+1] = temp;
+
+            }
+        }
+    }
+
+    public static boolean erSortert(int[] a)  // legges i samleklassen Tabell
+    {
+        for (int i = 1; i < a.length; i++)      // starter med i = 1
+            if (a[i-1] > a[i]) return false;      // en inversjon
+
+        return true;
+    }
+
+    public static int maks(double[] a)     // legges i class Tabell
+    {
+        int m = 0;                           // indeks til største verdi
+        double maksverdi = a[0];             // største verdi
+
+        for (int i = 1; i < a.length; i++) if (a[i] > maksverdi)
+        {
+            maksverdi = a[i];     // største verdi oppdateres
+            m = i;                // indeks til største verdi oppdaters
+        }
+        return m;     // returnerer posisjonen til største verdi
+    }
+
+
+    public static int maks(String[] a)    // legges i class Tabell
+    {
+        int m = 0;                          // indeks til største verdi
+        String maksverdi = a[0];            // største verdi
+
+        for (int i = 1; i < a.length; i++) if (a[i].compareTo(maksverdi) > 0)
+        {
+            maksverdi = a[i];  // største verdi oppdateres
+            m = i;             // indeks til største verdi oppdaters
+        }
+        return m;  // returnerer posisjonen til største verdi
+    }
+
+
+    public static int maks(Integer[] a)
+    {
+        int m = 0;                          // indeks til største verdi
+        Integer maksverdi = a[0];           // største verdi
+
+        for (int i = 1; i < a.length; i++) if (a[i].compareTo(maksverdi) > 0)
+        {
+            maksverdi = a[i];  // største verdi oppdateres
+            m = i;             // indeks til største verdi oppdaters
+        }
+        return m;  // returnerer posisjonen til største verdi
+
+    }
+
+    public static <T extends Comparable<? super T>> int maks(T[] a)
+    {
+        int m = 0;                     // indeks til største verdi
+        T maksverdi = a[0];            // største verdi
+
+        for (int i = 1; i < a.length; i++) if (a[i].compareTo(maksverdi) > 0)
+        {
+            maksverdi = a[i];  // største verdi oppdateres
+            m = i;             // indeks til største verdi oppdaters
+        }
+        return m;  // returnerer posisjonen til største verdi
+    }
+
+    public static <T extends Comparable<? super T>> void innsettingssortering(T[] a)
+    {
+        for (int i = 1; i < a.length; i++)  // starter med i = 1
+        {
+            T verdi = a[i];        // verdi er et tabellelemnet
+            int  j = i - 1;        // j er en indeks
+            // sammenligner og forskyver:
+            for (; j >= 0 && verdi.compareTo(a[j]) < 0 ; j--) a[j+1] = a[j];
+
+            a[j + 1] = verdi;      // j + 1 er rett sortert plass
+        }
+    }
+
+    public static void skriv(Object[] a, int fra, int til){
+        Tabell.fratilKontroll(a.length, fra, til);
+
+        for (int i = fra; i < til; i++){
+            System.out.print(a[i] + " ");
+        }
+    }
+
+    public static void skriv(Object[] a){
+        skriv(a, 0, a.length);
+    }
+
+    public static void skrivln(Object[] a, int fra, int til){
+        skriv(a, fra, til);
+        System.out.println();
+    }
+
+    public static void bytt(Object[] a, int i, int j){
+        Object temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    public static Integer[] randPermInteger(int n)
+    {
+        Integer[] a = new Integer[n];               // en Integer-tabell
+        Arrays.setAll(a, i -> i + 1);               // tallene fra 1 til n
+
+        Random r = new Random();   // hentes fra  java.util
+
+        for (int k = n - 1; k > 0; k--)
+        {
+            int i = r.nextInt(k+1);  // tilfeldig tall fra [0,k]
+            bytt(a,k,i);             // bytter om
+        }
+        return a;  // tabellen med permutasjonen returneres
+    }
+
+    public static <T> void innsettingssortering(T[] a, Komporator.Komparator<? super T> c)
+    {
+        for (int i = 1; i < a.length; i++)  // starter med i = 1
+        {
+            T verdi = a[i];        // verdi er et tabellelemnet
+            int  j = i - 1;        // j er en indeks
+
+            // sammenligner og forskyver:
+            for (; j >= 0 && c.compare(verdi,a[j]) < 0 ; j--) a[j+1] = a[j];
+
+            a[j + 1] = verdi;      // j + 1 er rett sortert plass
+        }
+    }
+
+
 
 
 
