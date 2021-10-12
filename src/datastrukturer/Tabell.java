@@ -3,6 +3,7 @@ package datastrukturer;
 import eksempelklasser.Komporator;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 public class Tabell {
@@ -428,6 +429,40 @@ public class Tabell {
 
             a[j + 1] = verdi;      // j + 1 er rett sortert plass
         }
+    }
+
+    public static <T> int maks(T[] a, Komporator.Komparator<? super T> c)
+    {
+        return maks(a, 0, a.length, c);  // kaller metoden nedenfor
+    }
+
+    public static <T> int maks(T[] a, int fra, int til, Komporator.Komparator<? super T> c)
+    {
+        fratilKontroll(a.length,fra,til);
+
+        if (fra == til) throw new NoSuchElementException
+                ("fra(" + fra + ") = til(" + til + ") - tomt tabellintervall!");
+
+        int m = fra;                // indeks til største verdi
+        T maksverdi = a[fra];       // største verdi
+
+        for (int i = fra + 1; i < til; i++)   // går gjennom intervallet
+        {
+            if (c.compare(a[i],maksverdi) > 0)  // bruker komparatoren
+            {
+                maksverdi = a[i];     // største verdi oppdateres
+                m = i;                // indeks til største verdi oppdateres
+            }
+        }
+        return m;                 // posisjonen til største verdi
+
+    }  // maks
+
+    public static int sum(int n, int k)
+    {
+        if (n == k) return n;
+        int m = (n + k)/2;
+        return sum(n,m) + sum(m+1,k);
     }
 
 
